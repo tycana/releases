@@ -146,7 +146,7 @@ Tycana CLI is proprietary software. During the beta period:
 - Feedback and bug reports appreciated
 - No redistribution permitted
 
-See the [LICENSE](https://github.com/tycana/releases/releases/latest/download/LICENSE) file included with each release for full terms.
+See the LICENSE file included in your download archive for full terms.
 
 ---
 
