@@ -470,12 +470,22 @@ main() {
         local current_version
         current_version=$("$BINARY_NAME" version 2>/dev/null | head -1 | awk '{print $2}' || echo "unknown")
         warn "Tycana CLI $current_version is already installed"
-        echo -n "Do you want to reinstall? [y/N]: "
-        read -r response
-        case "$response" in
-            [yY][eE][sS]|[yY]) ;;
-            *) ohai "Installation cancelled"; exit 0 ;;
-        esac
+        
+        # Check for force install flag
+        if [ "${TYCANA_FORCE_INSTALL:-}" = "1" ]; then
+            ohai "Force install requested, proceeding with reinstallation"
+        elif [ -t 0 ]; then
+            # Interactive terminal available
+            echo -n "Do you want to reinstall? [y/N]: "
+            read -r response
+            case "$response" in
+                [yY][eE][sS]|[yY]) ;;
+                *) ohai "Installation cancelled"; exit 0 ;;
+            esac
+        else
+            # No interactive terminal (piped input), default to upgrade
+            ohai "Upgrading to latest version..."
+        fi
     fi
     
     install_tycana
