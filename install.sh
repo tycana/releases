@@ -401,7 +401,7 @@ install_tycana() {
     # Prefer XDG_RUNTIME_DIR, then HOME, then /tmp as fallback
     local temp_base
     if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -d "${XDG_RUNTIME_DIR:-}" ]; then
-        temp_base="$XDG_RUNTIME_DIR"
+        temp_base="${XDG_RUNTIME_DIR:-}"
     elif [ -n "$HOME" ] && [ -d "$HOME" ]; then
         temp_base="$HOME/.cache"
         mkdir -p "$temp_base" 2>/dev/null || temp_base="$HOME"
