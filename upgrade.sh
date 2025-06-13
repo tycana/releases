@@ -335,7 +335,6 @@ upgrade_tycana() {
     printf "${tty_green}✓${tty_reset} Successfully upgraded from %s to %s!\n" "$current_version" "$final_version" >&2
     echo >&2
     accent "🎉 Upgrade complete!"
-    warn "Please restart any running Tycana sessions to use the new version"
     
     # Show what's new
     echo >&2
