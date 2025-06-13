@@ -210,6 +210,46 @@ download_binary() {
     echo "$binary_path"
 }
 
+# Check for sudo access (from install.sh)
+unset HAVE_SUDO_ACCESS # unset this from the environment
+
+have_sudo_access() {
+    if [[ ! -x "/usr/bin/sudo" ]]; then
+        return 1
+    fi
+
+    local -a SUDO=("/usr/bin/sudo")
+    if [[ -n "${SUDO_ASKPASS-}" ]]; then
+        SUDO+=("-A")
+    elif [[ -n "${NONINTERACTIVE-}" ]]; then
+        SUDO+=("-n")
+    fi
+
+    if [[ -z "${HAVE_SUDO_ACCESS-}" ]]; then
+        if [[ -n "${NONINTERACTIVE-}" ]]; then
+            ${SUDO[@]} -l /bin/mkdir &>/dev/null
+        else
+            ${SUDO[@]} -v && ${SUDO[@]} -l /bin/mkdir &>/dev/null
+        fi
+        HAVE_SUDO_ACCESS="$?"
+    fi
+
+    if [[ -n "${SUDO_ASKPASS-}" ]]; then
+        SUDO+=("-A")
+    fi
+
+    return "${HAVE_SUDO_ACCESS}"
+}
+
+execute_sudo() {
+    local -a SUDO=("/usr/bin/sudo")
+    if have_sudo_access; then
+        execute "${SUDO[@]}" "$@"
+    else
+        execute "$@"
+    fi
+}
+
 # Safely replace binary (THE KEY DIFFERENCE from install.sh)
 safe_replace_binary() {
     local current_binary="$1"
@@ -217,37 +257,74 @@ safe_replace_binary() {
     
     ohai "Replacing binary at: $current_binary"
     
+    # Check if we need sudo for this operation
+    local binary_dir
+    binary_dir=$(dirname "$current_binary")
+    local needs_sudo=false
+    
+    if [ ! -w "$binary_dir" ]; then
+        needs_sudo=true
+        ohai "Elevated permissions required for $binary_dir"
+    fi
+    
     # Create backup filename with timestamp
     local backup_binary="${current_binary}.backup-$(date +%s)"
     
     # Step 1: Move current binary to backup (this releases the file handle!)
     # This is the key to solving "text file busy"
-    if ! mv "$current_binary" "$backup_binary"; then
-        abort "Failed to backup current binary to $backup_binary"
+    if [ "$needs_sudo" = true ]; then
+        if ! execute_sudo mv "$current_binary" "$backup_binary"; then
+            abort "Failed to backup current binary to $backup_binary"
+        fi
+    else
+        if ! mv "$current_binary" "$backup_binary"; then
+            abort "Failed to backup current binary to $backup_binary"
+        fi
     fi
     
     # Step 2: Move new binary into place atomically
-    if ! mv "$new_binary" "$current_binary"; then
-        # Rollback on failure
-        warn "Failed to install new binary, rolling back..."
-        if ! mv "$backup_binary" "$current_binary"; then
-            abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+    if [ "$needs_sudo" = true ]; then
+        if ! execute_sudo mv "$new_binary" "$current_binary"; then
+            # Rollback on failure
+            warn "Failed to install new binary, rolling back..."
+            if ! execute_sudo mv "$backup_binary" "$current_binary"; then
+                abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+            fi
+            abort "Upgrade failed - original binary restored"
         fi
-        abort "Upgrade failed - original binary restored"
+    else
+        if ! mv "$new_binary" "$current_binary"; then
+            # Rollback on failure
+            warn "Failed to install new binary, rolling back..."
+            if ! mv "$backup_binary" "$current_binary"; then
+                abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+            fi
+            abort "Upgrade failed - original binary restored"
+        fi
     fi
     
     # Step 3: Verify new binary works
     if ! "$current_binary" version >/dev/null 2>&1; then
         # Rollback on failure
         warn "New binary failed verification, rolling back..."
-        if ! mv "$backup_binary" "$current_binary"; then
-            abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+        if [ "$needs_sudo" = true ]; then
+            if ! execute_sudo mv "$backup_binary" "$current_binary"; then
+                abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+            fi
+        else
+            if ! mv "$backup_binary" "$current_binary"; then
+                abort "CRITICAL: Failed to restore backup! Original binary at: $backup_binary"
+            fi
         fi
         abort "New binary verification failed - original binary restored"
     fi
     
     # Step 4: Clean up backup on success
-    rm -f "$backup_binary"
+    if [ "$needs_sudo" = true ]; then
+        execute_sudo rm -f "$backup_binary"
+    else
+        rm -f "$backup_binary"
+    fi
     
     ohai "Binary successfully replaced"
 }
