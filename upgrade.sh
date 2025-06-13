@@ -262,7 +262,8 @@ safe_replace_binary() {
     binary_dir=$(dirname "$current_binary")
     local needs_sudo=false
     
-    if [ ! -w "$binary_dir" ]; then
+    # Check if directory is writable or if binary is in a system location
+    if [ ! -w "$binary_dir" ] || [[ "$current_binary" == /usr/local/bin/* ]] || [[ "$current_binary" == /usr/bin/* ]]; then
         needs_sudo=true
         ohai "Elevated permissions required for $binary_dir"
     fi
