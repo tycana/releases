@@ -1,4 +1,10 @@
-# Tycana CLI
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="tycana-logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="tycana-logo-light.svg">
+    <img alt="tycana" src="tycana-logo-light.svg" width="200">
+  </picture>
+</p>
 
 <p align="center">
   <img src="https://img.shields.io/github/v/release/tycana/releases?style=for-the-badge&label=Latest%20Release" alt="Latest Release">
