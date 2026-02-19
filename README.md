@@ -12,7 +12,8 @@
 </p>
 
 <p align="center">
-  <strong>Add tasks in your terminal. See them in your calendar. Everywhere.</strong>
+  <strong>Command your tasks.</strong><br>
+  <strong>Your terminal. Your calendar. Your AI assistant.</strong>
 </p>
 
 ---
