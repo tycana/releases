@@ -1,172 +1,112 @@
-# Tycana CLI Releases
+# Tycana CLI
 
 <p align="center">
   <img src="https://img.shields.io/github/v/release/tycana/releases?style=for-the-badge&label=Latest%20Release" alt="Latest Release">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Linux%20%7C%20Windows-blue?style=for-the-badge" alt="Platforms">
-  <img src="https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge" alt="License">
 </p>
 
 <p align="center">
-  <strong>Command your tasks from the terminal.</strong><br>
-  The terminal-first task manager that respects your workflow and your data.
+  <strong>Add tasks in your terminal. See them in your calendar. Everywhere.</strong>
 </p>
 
 ---
 
-## 🚀 Download Tycana
+A CLI task manager with calendar sync for technical professionals who live in their terminal.
 
-### Latest Release
-Download the latest version from the [releases page](https://github.com/tycana/releases/releases/latest).
+- Natural language task capture from the command line
+- Calendar subscriptions — tasks appear on your phone, laptop, anywhere
+- Cloud sync across devices
+- Spaces for organizing and sharing tasks
+- MCP server for managing tasks via AI assistants (Claude, ChatGPT)
 
-### Quick Install
+## Install
 
-#### macOS & Linux
+### Homebrew (macOS and Linux)
+
 ```bash
-# Download the latest release (replace VERSION and PLATFORM)
-curl -L https://github.com/tycana/releases/releases/download/VERSION/tycana_VERSION_PLATFORM.tar.gz -o tycana.tar.gz
-
-# Extract
-tar xzf tycana.tar.gz
-
-# Move to PATH
-sudo mv tycana /usr/local/bin/
-
-# Verify installation
-tycana version
+brew install tycana/tap/tycana
 ```
 
-#### Platform Files
-- **macOS Intel**: `tycana_VERSION_darwin_x86_64.tar.gz`
-- **macOS Apple Silicon**: `tycana_VERSION_darwin_arm64.tar.gz`
-- **Linux x64**: `tycana_VERSION_linux_x86_64.tar.gz`
-- **Linux ARM**: `tycana_VERSION_linux_arm64.tar.gz`
-
-#### Windows
-1. Download the appropriate zip file:
-   - **Windows x64**: `tycana_VERSION_windows_x86_64.zip`
-   - **Windows ARM**: `tycana_VERSION_windows_arm64.zip`
-2. Extract the zip file
-3. Add the `tycana.exe` to your PATH
-4. Verify with `tycana version`
-
-### Verify Downloads
-All releases include a `checksums.txt` file. Verify your download:
+### Shell script (macOS and Linux)
 
 ```bash
-# macOS/Linux
+curl -fsSL https://tycana.com/install | bash
+```
+
+### Manual download
+
+Download the archive for your platform from the [latest release](https://github.com/tycana/releases/releases/latest), extract it, and add `tycana` to your PATH.
+
+| Platform | File |
+|----------|------|
+| macOS Apple Silicon | `tycana_VERSION_darwin_arm64.tar.gz` |
+| macOS Intel | `tycana_VERSION_darwin_x86_64.tar.gz` |
+| Linux x64 | `tycana_VERSION_linux_x86_64.tar.gz` |
+| Linux ARM64 | `tycana_VERSION_linux_arm64.tar.gz` |
+| Windows x64 | `tycana_VERSION_windows_x86_64.tar.gz` |
+| Windows ARM64 | `tycana_VERSION_windows_arm64.tar.gz` |
+
+### Verify downloads
+
+All releases include `checksums.txt`:
+
+```bash
 shasum -a 256 -c checksums.txt
-
-# Windows (PowerShell)
-Get-FileHash tycana.exe -Algorithm SHA256
 ```
 
----
-
-## 📘 What is Tycana?
-
-Tycana is a modern command-line task management system that prioritizes:
-
-- **🔓 Data Ownership**: Your tasks in plain YAML files
-- **🛠️ Developer Workflows**: Terminal-native, scriptable, composable
-- **🌱 Calm Productivity**: Structure without rigidity
-- **⚡ Natural Language**: Quick capture with smart parsing
-
-### Key Features
+## Quick start
 
 ```bash
-# Quick capture with natural language
-tycana add "Review PR by 3pm tomorrow @backend #code-review ~45m"
+# Add tasks with natural language
+tycana add "Check staging cert expiry friday 2pm"
+tycana add "Capacity review next monday @infra #urgent ~1h"
 
-# Smart filtering
-tycana today                    # What's on your plate
-tycana list --due "this week"   # Week at a glance
-tycana list --project work      # Project-focused view
+# See what's on your plate
+tycana list
 
-# Git-powered sync
-tycana sync --git              # Version control your tasks
+# Complete tasks by title match
+tycana done "staging cert"
+
+# Filter and search
+tycana list "@infra"
+tycana list --due today
+tycana list --tags urgent
+
+# Organize with spaces
+tycana context work
+tycana add "Rotate API keys next monday"
 ```
 
----
+## Pricing
 
-## 🎯 Beta Program
+**Free** — Full CLI, local storage, one space, manual calendar export.
 
-Tycana is currently in beta. We're looking for developers who:
-- Live in the terminal
-- Value data ownership
-- Want to shape the future of task management
+**Sync ($6/month)** — Cloud sync, unlimited spaces, live calendar subscriptions, MCP access, sharing.
 
-### How to Join
-1. Install Tycana CLI
-2. Use it for a week
-3. Share feedback via [hello@tycana.com](mailto:hello@tycana.com)
-4. Get lifetime discount when we launch
+No trials. The free tier is genuinely useful. Pay when you want sync and calendar.
 
----
+## Documentation
 
-## 📚 Documentation
+- Website: [tycana.com](https://tycana.com)
+- Docs: [tycana.com/docs](https://tycana.com/docs)
+- Built-in help: `tycana help`
 
-- **Quick Start**: See [Installation Guide](https://tycana.com/install)
-- **User Guide**: Available after installation via `tycana help`
-- **Website**: [tycana.com](https://tycana.com)
+## System requirements
 
----
+- macOS 10.15+, Linux (glibc 2.17+), or Windows 10+
+- x64 or ARM64
 
-## 🔄 Release Schedule
+## Security
 
-- **Beta Releases**: Weekly on Fridays
-- **Version Format**: `v0.x.x` during beta
-- **Stable Release**: Q2 2025 (v1.0.0)
+All binaries are built via GitHub Actions with checksums for verification.
+Report security issues to hello@tycana.com.
 
-### Release Channels
-- **Latest**: Current beta release (recommended)
-- **Edge**: Pre-release builds (experimental)
+## License
 
----
-
-## 📋 System Requirements
-
-### Minimum Requirements
-- **macOS**: 10.15 or later
-- **Linux**: Any modern distribution with glibc 2.17+
-- **Windows**: Windows 10 or later
-- **Architecture**: x64 or ARM64
-
-### Tested On
-- macOS 14 (Sonoma) on Apple Silicon
-- Ubuntu 22.04 LTS
-- Fedora 39
-- Windows 11
-
----
-
-## ⚖️ License
-
-Tycana CLI is proprietary software. During the beta period:
-- Free for evaluation and testing
-- Feedback and bug reports appreciated
-- No redistribution permitted
-
-See the LICENSE file included in your download archive for full terms.
-
----
-
-## 🤝 Support
-
-- **Email**: [hello@tycana.com](mailto:hello@tycana.com)
-- **Issues**: Contact us directly (issue tracker coming soon)
-- **Updates**: Follow development at [tycana.com](https://tycana.com)
-
----
-
-## 🔐 Security
-
-- All binaries are built via GitHub Actions
-- Checksums provided for verification
-- Report security issues to: hello@tycana.com
+Proprietary. See the LICENSE file included in the release archive.
 
 ---
 
 <p align="center">
-  <i>Command your tasks. Own your data. Stay in flow.</i><br>
-  <strong>© 2025 Tycana. All rights reserved.</strong>
+  <a href="https://tycana.com">tycana.com</a>
 </p>
